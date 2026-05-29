@@ -3,7 +3,7 @@ import requests
 def test_estimate_time():
     response = requests.get("http://localhost:8080/estimate-time/10")
     assert response.status_code == 200
-    assert "time" in response.json()
+    assert "estimated_delivery_time_minutes" in response.json()
 
 def test_estimate_time_invalid_input():
     response = requests.get("http://localhost:8080/estimate-time/not_a_number")
