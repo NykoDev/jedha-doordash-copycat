@@ -1,0 +1,39 @@
+name: jedha-doordash1
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the Docker image
+        run: docker build -t doordash/delivery-fee-service .
+
+      - name: Launch the Docker container
+        run: docker run -d -p 8080:8090 doordash/delivery-fee-service
+
+      - name: Wait for the app to be ready
+        run: sleep 3
+
+      - name: Test endpoint status
+        run: curl -f http://localhost:8080/status
+
+      - name: Test POST endpoint calculate-fee
+        run: |
+          curl -f -X POST http://localhost:8080/calculate-fee/ \
+            -H "Content-Type: application/json" \
+            -d '{"distance_km": 5.0, "weight_kg": 2.0}'
+      
+      - name: Test endpoint estimate-time
+        run: curl -f http://localhost:8080/estimate-time/20
+      
+      
+
+
+      
